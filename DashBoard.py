@@ -4,7 +4,7 @@ import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
 import matplotlib.pyplot as plt
-
+from huggingface_hub import hf_hub_download
 
 import pandas as pd
 import numpy as np
@@ -118,34 +118,35 @@ class Happy_Dataset_MultiTarget(Dataset):
 
         return input_ids, attention_mask, targets
 
-model_nm = 'klue/roberta-small'
-base_model = AutoModel.from_pretrained(model_nm)
-tokenizer = AutoTokenizer.from_pretrained(model_nm)
-
 def seed_worker(worker_id):
     worker_seed = torch.initial_seed() % 2**32
     np.random.seed(worker_seed)
     random.seed(worker_seed)
 
 g = torch.Generator()
-g.manual_seed(0)
-
-from huggingface_hub import hf_hub_download
-model_file = hf_hub_download(repo_id="Juneha/happyscore", filename="multilabel.pth")
-
-#PATH = 'multilabel.pth'
-model = BertRegresser_MultiTarget(base_model)
-model.load_state_dict(torch.load(model_file, map_location=torch.device('cpu')), strict=False)
+g.manual_seed(0)    
 device = torch.device("cpu")
-model = model.to(device)
+
+def predice_score():
+    model_nm = 'klue/roberta-small'
+    base_model = AutoModel.from_pretrained(model_nm)
+    tokenizer = AutoTokenizer.from_pretrained(model_nm)
+    model_file = hf_hub_download(repo_id="Juneha/happyscore", filename="multilabel.pth")
+    model = BertRegresser_MultiTarget(base_model)
+    model.load_state_dict(torch.load(model_file, map_location=torch.device('cpu')), strict=False)
+    
+    model = model.to(device)
+    
+    return model, tokenizer
 
 
 def use_model(text):
+    model, tokenizer = predice_score()
     df = pd.DataFrame([text], columns=['일상'])
     sample = Happy_Dataset_MultiTarget(data = df, maxlen = 20, tokenizer = tokenizer)
     sample_loader = DataLoader(dataset=sample, batch_size=32, num_workers=1, worker_init_fn=seed_worker,
     generator=g)
-
+    
     #score = predict(model, sample_loader, device)[0][0]*100
     score = pd.DataFrame(predict(model, sample_loader, device)[0]).T
     score.columns = ['만족', '행복', '의미', '스트레스', '짜증', '무기력', '즐거움','평안', '우울', '불안']
