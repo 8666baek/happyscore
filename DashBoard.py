@@ -17,7 +17,8 @@ from torch.utils.data import Dataset
 from torch.utils.data import DataLoader
 from torch import nn
 from tqdm import tqdm, trange
-
+from transformers import logging
+logging.set_verbosity_error()
 
 # seed 고정
 seed = 42
