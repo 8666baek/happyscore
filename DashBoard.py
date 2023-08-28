@@ -147,23 +147,22 @@ def use_model(text):
 
     #score = predict(model, sample_loader, device)[0][0]*100
     score = pd.DataFrame(predict(model, sample_loader, device)[0]).T
-    score.columns = ['질문1', '질문2', '질문3', '질문4', '질문5', '질문6', '질문7','질문8', '질문9', '질문10']
+    score.columns = ['만족', '행복', '의미', '스트레스', '짜증', '무기력', '즐거움','평안', '우울', '불안']
     score['행복점수'] = score.sum(axis=1)
     score = score * 10
     score = np.round(score, 1)
     return score
 
-st.title('Happiness Predictor')
-st.write('Enter a text and find out its happiness score!')
+st.title('행복 점수 예측 모델')
+st.write('텍스트를 입력하고 행복 점수를 확인해보세요!')
 
-text_input = st.text_input(label='Enter your text:')
-if st.button('Predict'):
+text_input = st.text_input(label='문장 입력:')
+if st.button('예측하기'):
     if text_input:
         score = use_model(text_input)
-        st.write(f'Text: {text_input}')
-        st.write(f'Happiness Score: {score["행복점수"].values[0]:.1f}')
-        
-        st.write(score)
+        st.markdown(f'<h3 style="">행복 점수: {score["행복점수"].values[0]:.1f}</h3>', unsafe_allow_html=True)
+        st.write('상세 점수')
+        st.write(score[['만족', '행복', '의미', '스트레스', '짜증', '무기력', '즐거움','평안', '우울', '불안']])
 
     
     
