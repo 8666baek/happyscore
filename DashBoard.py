@@ -136,7 +136,7 @@ model_file = hf_hub_download(repo_id="Juneha/happyscore", filename="multilabel.p
 #PATH = 'multilabel.pth'
 model = BertRegresser_MultiTarget(base_model)
 model.load_state_dict(torch.load(model_file, map_location=torch.device('cpu')), strict=False)
-device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+device = torch.device("cpu")
 model = model.to(device)
 
 
