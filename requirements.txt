@@ -1,0 +1,11 @@
+streamlit
+numpy
+pandas
+plotly
+matplotlib
+torch
+os
+random
+transformers
+tqdm
+huggingface_hub
