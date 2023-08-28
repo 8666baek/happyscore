@@ -160,7 +160,12 @@ text_input = st.text_input(label='문장 입력:')
 if st.button('예측하기'):
     if text_input:
         score = use_model(text_input)
+        st.write('')
+        st.write('')
         st.markdown(f'<h3 style="">행복 점수: {score["행복점수"].values[0]:.1f}</h3>', unsafe_allow_html=True)
+        st.write('')
+        st.write('')
+
         st.write('상세 점수')
         st.write(score[['만족', '행복', '의미', '스트레스', '짜증', '무기력', '즐거움','평안', '우울', '불안']])
 
