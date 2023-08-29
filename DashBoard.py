@@ -128,7 +128,7 @@ def predice_score():
     model_nm = 'klue/roberta-small'
     base_model = AutoModel.from_pretrained(model_nm)
     tokenizer = AutoTokenizer.from_pretrained(model_nm)
-    model_file = hf_hub_download(repo_id="Juneha/happyscore", filename="multilabel.pth")
+    model_file = hf_hub_download(repo_id="Juneha/happyscore", filename="model_update0829.pth")
     model = BertRegresser_MultiTarget(base_model)
     model.load_state_dict(torch.load(model_file, map_location=torch.device('cpu')), strict=False)
     
@@ -140,7 +140,7 @@ def predice_score():
 def use_model(text):
     model, tokenizer = predice_score()
     df = pd.DataFrame([text], columns=['일상'])
-    sample = Happy_Dataset_MultiTarget(data = df, maxlen = 20, tokenizer = tokenizer)
+    sample = Happy_Dataset_MultiTarget(data = df, maxlen = 25, tokenizer = tokenizer)
     sample_loader = DataLoader(dataset=sample, batch_size=32, num_workers=1, worker_init_fn=seed_worker,
     generator=g)
     
